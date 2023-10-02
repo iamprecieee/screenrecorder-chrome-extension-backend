@@ -29,7 +29,6 @@ To run the Chrome Extension Backend locally, follow these steps:
    ```
 
 ## Structure
-These are the models in the application
 * [Init](resources/__init__.py) - This creates and configures the Flask application.
 * [Config](resources/config.py) - This handles the configuration variables for the entire app.
 * [Utils](resources/utils.py) - This module contains all necessary helper functions for views.py
@@ -38,7 +37,7 @@ These are the models in the application
 
 
 ## Documentation
-For detailed documentation on these API endpoints and their usage, please refer to the following:
+For detailed documentation on the API endpoints and their usage, please refer to the following:
 
 - [Video Upload](UPLOAD_DOCUMENTATION.md) file.
 - [Video Playback](VPLAYBACK_DOCUMENTATION.md) file.
