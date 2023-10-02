@@ -108,21 +108,6 @@ class TranscribeVideo(Resource):
                 with tempfile.NamedTemporaryFile(suffix=".mp3", delete=False) as temp_audio_file:
                     audio_clip.write_audiofile(temp_audio_file.name)
                 transcribed_text = transcribe_audio(temp_audio_file.name)
-                timestamps = []
-                interval = 30  # seconds
-                duration = int(video_clip.duration)
-                for time in range(0, duration, interval):
-                    minutes = time // 60
-                    seconds = time % 60
-                    timestamp = f"{minutes:02}:{seconds:02}"
-                    timestamps.append(timestamp)
-                transcribed_with_timestamps = []
-                for timestamp, text in zip(timestamps, transcribed_text.splitlines()):
-                    transcribed_with_timestamps.append(f"{timestamp} - {text}")
-                temp_video_file.close()
-                temp_audio_file.close()
-                os.remove(temp_video_file.name)
-                os.remove(temp_audio_file.name)
-            return jsonify({"Transcription": "\n".join(transcribed_with_timestamps)})
+            return jsonify({"Transcription": transcribed_text})
         except Exception as e:
             return jsonify({"error": str(e)})
