@@ -1,6 +1,6 @@
 # Chrome Extension Backend
 
-This contains the backend code for a screenrecorder chrome-extension project; which provides a RESTful API for managing video retrieval, saving to disk, and transcription.
+This contains the backend code for a screenrecorder chrome extension plugin, which provides a RESTful API for managing video retrieval, saving to disk, and transcription.
 
 
 ## Installation
