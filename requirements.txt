@@ -36,6 +36,7 @@ requests==2.31.0
 six==1.16.0
 sympy==1.12
 tiktoken==0.3.3
+--find-links https://download.pytorch.org/whl/cpu/torch_stable.html
 torch==2.0.1
 tqdm==4.66.1
 typing_extensions==4.8.0
