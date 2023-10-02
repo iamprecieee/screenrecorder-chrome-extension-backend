@@ -44,3 +44,8 @@ For detailed documentation on these API endpoints and their usage, please refer 
 - [Video Playback](VPLAYBACK_DOCUMENTATION.md) file.
 - [Video List Retrieval](RETRIEVAL_DOCUMENTATION.md) file.
 - [Video Transcription](TRANSCRIPTON_DOCUMENTATION.md) file.
+
+## Swagger UI and Live Link
+- [Swagger](https://chrome-exx-937e6f500932.herokuapp.com/swagger-ui)
+- [Live Link](https://chrome-exx-937e6f500932.herokuapp.com/)
+
