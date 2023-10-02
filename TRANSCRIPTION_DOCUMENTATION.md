@@ -2,6 +2,10 @@
 
 This documentation provides details about the API endpoint for the chrome-extension backend which performs operations for transcribing videos with timestamps.
 
+## Description
+
+The video file is converted to an audio file, which is then transcribed to text using openAI's [Whisper](https://github.com/openai/whisper).
+
 ## Base URL
 
 The base URL for all API endpoints is:
