@@ -35,6 +35,6 @@ Response Body: A JSON object containing the transcribed text with timestamps.
 ```json
 [
   {
-    "Transcription": "00: you"
+    "Transcription": "00:00- you"
   }
 ]
