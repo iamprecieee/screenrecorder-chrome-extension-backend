@@ -1,4 +1,3 @@
-# from flask_restful import Resource
 from flask_smorest import Blueprint
 from resources.routes import generate_unique_filename, get_file_extension, transcribe_audio
 from flask.views import MethodView
@@ -12,7 +11,6 @@ blp = Blueprint("videos", __name__)
 
 unique_name = generate_unique_filename()
 
-# class VideoListResource(Resource):
 @blp.route("/videos")
 class VideoList(MethodView):
     """
@@ -45,7 +43,6 @@ class VideoList(MethodView):
         
         
 
-# class VideoToDisk(Resource):
 @blp.route("/videos/upload")
 class UploadToDisk(MethodView):
     """
@@ -82,7 +79,6 @@ class UploadToDisk(MethodView):
         
         
 
-# class VideoPlayBack(Resource):
 @blp.route("/videos/<filename>")
 class VideoPlayback(MethodView):
     """
@@ -98,7 +94,6 @@ class VideoPlayback(MethodView):
         
         
         
-# class TranscribeVideo(Resource):
 @blp.route("/videos/<filename>/transcribe")
 class TranscribeVideo(MethodView):
     """
