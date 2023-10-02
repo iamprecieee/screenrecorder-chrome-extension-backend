@@ -1,8 +1,9 @@
 from flask_smorest import Blueprint
-from resources.routes import generate_unique_filename, get_file_extension, transcribe_audio
+from resources.utils import generate_unique_filename, get_file_extension, transcribe_audio
 from flask.views import MethodView
 from flask import current_app, jsonify, request, send_from_directory
-import os, tempfile
+import os
+import tempfile
 from moviepy.editor import VideoFileClip
 from werkzeug.utils import secure_filename
 
@@ -10,6 +11,7 @@ from werkzeug.utils import secure_filename
 blp = Blueprint("videos", __name__)
 
 unique_name = generate_unique_filename()
+
 
 @blp.route("/videos")
 class VideoList(MethodView):
@@ -40,8 +42,7 @@ class VideoList(MethodView):
             return video_list
         except Exception as e:
             return {"error": str(e)}
-        
-        
+
 
 @blp.route("/videos/upload")
 class UploadToDisk(MethodView):
@@ -76,8 +77,7 @@ class UploadToDisk(MethodView):
             return {"filename": filename}
         except Exception as e:
             return {"error": str(e)}
-        
-        
+
 
 @blp.route("/videos/<filename>")
 class VideoPlayback(MethodView):
@@ -91,13 +91,12 @@ class VideoPlayback(MethodView):
         except Exception as e:
             return jsonify({"error": str(e)})
 
-        
-        
-        
+
 @blp.route("/videos/<filename>/transcribe")
 class TranscribeVideo(MethodView):
     """
     Transcribes saved video with timestamps.
+    First converts the video to audio, and then the audio to text.
     """
 
     def get(self, filename):
@@ -106,7 +105,11 @@ class TranscribeVideo(MethodView):
                 current_app.config["UPLOAD_FOLDER"], filename)
             if not os.path.exists(file_path):
                 return jsonify({"error": "Video not found"}), 404
-            with tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_video_file:
+            if filename.endswith(".mp4"):
+                file_suffix = ".mp4"
+            elif filename.endswith(".webm"):
+                file_suffix = ".webm"
+            with tempfile.NamedTemporaryFile(suffix=file_suffix, delete=False) as temp_video_file:
                 with open(file_path, "rb") as original_file:
                     temp_video_file.write(original_file.read())
                 temp_video_file.seek(0)

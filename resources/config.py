@@ -1,3 +1,6 @@
+"""
+This module handles the configuration for the entire app.
+"""
 import os
 
 
