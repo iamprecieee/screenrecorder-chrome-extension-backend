@@ -1,14 +1,20 @@
-from flask_restful import Resource
+# from flask_restful import Resource
+from flask_smorest import Blueprint
 from resources.routes import generate_unique_filename, get_file_extension, transcribe_audio
+from flask.views import MethodView
 from flask import current_app, jsonify, request, send_from_directory
 import os, tempfile
 from moviepy.editor import VideoFileClip
 from werkzeug.utils import secure_filename
 
 
+blp = Blueprint("videos", __name__)
+
 unique_name = generate_unique_filename()
 
-class VideoListResource(Resource):
+# class VideoListResource(Resource):
+@blp.route("/videos")
+class VideoList(MethodView):
     """
     Retrieves a list of video metadata (filename, file size, resolution, and extension) for uploaded videos.
     """
@@ -39,7 +45,9 @@ class VideoListResource(Resource):
         
         
 
-class VideoToDisk(Resource):
+# class VideoToDisk(Resource):
+@blp.route("/videos/upload")
+class UploadToDisk(MethodView):
     """
     Uploads and appends video chunks to an existing video file on the disk.
     """
@@ -74,7 +82,9 @@ class VideoToDisk(Resource):
         
         
 
-class VideoPlayBack(Resource):
+# class VideoPlayBack(Resource):
+@blp.route("/videos/<filename>")
+class VideoPlayback(MethodView):
     """
     Retrieves and serves the requested video for playback.
     """
@@ -88,7 +98,9 @@ class VideoPlayBack(Resource):
         
         
         
-class TranscribeVideo(Resource):
+# class TranscribeVideo(Resource):
+@blp.route("/videos/<filename>/transcribe")
+class TranscribeVideo(MethodView):
     """
     Transcribes saved video with timestamps.
     """
@@ -108,6 +120,21 @@ class TranscribeVideo(Resource):
                 with tempfile.NamedTemporaryFile(suffix=".mp3", delete=False) as temp_audio_file:
                     audio_clip.write_audiofile(temp_audio_file.name)
                 transcribed_text = transcribe_audio(temp_audio_file.name)
-            return jsonify({"Transcription": transcribed_text})
+                timestamps = []
+                interval = 30  # seconds
+                duration = int(video_clip.duration)
+                for time in range(0, duration, interval):
+                    minutes = time // 60
+                    seconds = time % 60
+                    timestamp = f"{minutes:02}:{seconds:02}"
+                    timestamps.append(timestamp)
+                transcribed_with_timestamps = []
+                for timestamp, text in zip(timestamps, transcribed_text.splitlines()):
+                    transcribed_with_timestamps.append(f"{timestamp} - {text}")
+                temp_video_file.close()
+                temp_audio_file.close()
+                os.remove(temp_video_file.name)
+                os.remove(temp_audio_file.name)
+            return jsonify({"Transcription": "\n".join(transcribed_with_timestamps)})
         except Exception as e:
             return jsonify({"error": str(e)})
