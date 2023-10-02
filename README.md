@@ -33,7 +33,7 @@ To run the Chrome Extension Backend locally, follow these steps:
 * [Config](resources/config.py) - This handles the configuration variables for the entire app.
 * [Utils](resources/utils.py) - This module contains all necessary helper functions for views.py
 * [Views](resources/views.py) - This contains the endpoints necessary for operations on recorded video files.
-* [App](models/group_event.py) - This handles application running with necessary variables set in [flaskenv](.flaskenv).
+* [App](app.py) - This handles application running with necessary variables set in [flaskenv](.flaskenv).
 
 
 ## Documentation
