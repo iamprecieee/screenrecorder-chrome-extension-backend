@@ -9,7 +9,7 @@ To run the Chrome Extension Backend locally, follow these steps:
 
 1. **Clone the Repository and Activate the Virtual Environment:** 
    ```bash
-   git clone https://github.com/iamprecieee/chrome.git
+   git clone https://github.com/iamprecieee/screenrecorder-chrome-extension-backend.git
    cd chrome
    python3 -m venv venv   # Creates a virtual environment
    source venv/bin/activate  # Activates the virtual environment (Windows users: use venv\Scripts\activate)
