@@ -1,6 +1,6 @@
 # API Documentation - Video Transcription
 
-This documentation provides details about the API endpoint for the chrome-extension backend which performs operations for transcribing videos with timestamps.
+This documentation provides details about the API endpoint for the chrome-extension backend which performs operations for transcribing videos with timestamp of video duration.
 
 ## Description
 
@@ -14,27 +14,27 @@ The base URL for all API endpoints is:
 
 ## Endpoints
 
-### 4. Transcribe Video with Timestamps
+### 4. Transcribe Video with Timestamp
 
-#### Transcribes a saved video with timestamps.
+#### Transcribes a saved video with timestamp.
 
 - **Endpoint URL**: `/videos/<filename>/transcribe`
 - **HTTP Method**: GET
 - **Path Parameter**: filename (string): The name of the video file to retrieve.
 
-**Description**: Transcribes a saved video with timestamps.
+**Description**: Transcribes a saved video with timestamp of video duration.
 
 **Response**:
 
 - Status Code: 200 (OK)
 
-Response Body: A JSON object containing the transcribed text with timestamps.
+Response Body: A JSON object containing the transcribed text with timestamp.
 
 
 - Output:
 ```json
 [
   {
-    "Transcription": "00: you"
+    "Transcription": "00:05 - This is a transcript sample."
   }
 ]

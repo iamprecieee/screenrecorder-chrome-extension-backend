@@ -1,10 +1,10 @@
+from dotenv import load_dotenv
 from flask import Flask, jsonify
 from resources.config import Config
-from dotenv import load_dotenv
 from flask_smorest import Api
-from resources.views import blp as VideoBlueprint
-import os
 from flask_cors import CORS
+from resources.views import blp as VideoBlueprint
+import models
 
 
 def create_app():
@@ -26,8 +26,12 @@ def create_app():
 
     api.register_blueprint(VideoBlueprint)
 
-    # Create the UPLOAD_FOLDER directory if it doesn't exist
-    if not os.path.exists(app.config["UPLOAD_FOLDER"]):
-        os.makedirs(app.config["UPLOAD_FOLDER"])
+    @app.teardown_appcontext
+    def close_database(exception):
+        """
+        This cleans up database-related resources when no longer needed.
+        This helps in preventing resource leaks and improving application stability.
+        """
+        models.storage.close()
 
     return app

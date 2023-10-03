@@ -3,6 +3,8 @@ This module contains all necessary helper functions for views.py
 """
 from datetime import datetime
 from uuid import uuid4
+from tempfile import NamedTemporaryFile
+from moviepy.editor import VideoFileClip
 import whisper
 
 
@@ -22,10 +24,20 @@ def get_file_extension(content_type):
     """
     content_type_map = {
         "video/mp4": "mp4",
-        "video/mov": "mov",
-        "video/webm": "webm",
+        "video/webm": "webm"
     }
     return content_type_map.get(content_type)
+
+
+def create_video_clip(extension, data):
+    """ 
+    Create a temp file containing the video data.
+    Then, return a VideoFileClip using the temp file path.
+    """
+    with NamedTemporaryFile(delete=False, suffix=f".{extension}") as temp_file:
+        temp_file.write(data)
+        temp_file_path = temp_file.name
+    return VideoFileClip(temp_file_path)
 
 
 def transcribe_audio(audio_path):
