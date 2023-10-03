@@ -10,7 +10,7 @@ filelock==3.12.4
 Flask==2.3.3
 Flask-Cors==4.0.0
 flask-smorest==0.42.1
-gunicorn
+gunicorn==20.1.0
 idna==3.4
 imageio==2.31.5
 imageio-ffmpeg==0.4.9

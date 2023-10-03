@@ -24,7 +24,7 @@ class DBStorage:
         """
         from resources.config import Config
 
-        self.__engine = create_engine(Config.BASE_URI)
+        self.__engine = create_engine(Config.SQLALCHEMY_DATABASE_URI)
 
     def load(self):
         """
