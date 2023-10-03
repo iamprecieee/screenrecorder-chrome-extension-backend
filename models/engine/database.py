@@ -23,7 +23,7 @@ class DBStorage:
         However, it doesn't establish a database connection or create a session at this point; it merely prepares the engine.
         """
         from resources.config import Config
-        
+
         self.__engine = create_engine(Config.BASE_URI)
 
     def load(self):
@@ -103,6 +103,17 @@ class DBStorage:
             cls_instance = classes.get(cls_instance)
         if cls_instance is not None and cls_instance in classes.values():
             return self.__session.query(cls_instance).filter_by(filename=filename).first()
+
+    def delete(self, cls_instance: Union[Video, str], id: str):
+        """
+        Deletes an instance of the model from the database using id
+        """
+
+        if type(cls_instance) is str:
+            cls_instance = classes.get(cls_instance)
+        if cls_instance is not None and cls_instance in classes.values():
+            inst = self.__session.query(cls_instance).filter_by(id=id).first()
+            self.__session.delete(inst)
 
     def close(self):
         """

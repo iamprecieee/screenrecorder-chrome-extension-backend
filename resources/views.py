@@ -11,7 +11,6 @@ from moviepy.editor import VideoFileClip
 from werkzeug.utils import secure_filename
 
 
-
 blp = Blueprint("videos", __name__)
 
 unique_name = generate_unique_filename()
@@ -46,7 +45,7 @@ class VideoToDisk(MethodView):
 
         try:
             video_data = request.data
-            
+
             if not video_data:
                 return jsonify({"error": "Missing video data"}), 400
             if not extension:
@@ -76,7 +75,7 @@ class VideoToDisk(MethodView):
 
 
 @blp.route("/videos/<upload_id>")
-class VideoPlayBack(MethodView):
+class VideoPlayBackAndDelete(MethodView):
     def get(self, upload_id):
         """
         Retrieves and serves the requested video for playback.
@@ -89,6 +88,23 @@ class VideoPlayBack(MethodView):
         else:
             return jsonify({"error": "Video not found"}), 404
 
+    def delete(self, upload_id):
+        """ 
+        Deletes a specific video from database.
+        """
+        try:
+            video = models.storage.get("Video", id=upload_id)
+
+            if video:
+                models.storage.delete("Video", id=video.id)
+                models.storage.save()
+                return '', 204
+            else:
+                return jsonify({"error": "Video not found"}), 404
+
+        except Exception as e:
+            return jsonify({"error": f"{str(e)}"}), 500
+
 
 @blp.route("/videos/<upload_id>/transcribe")
 class TranscribeVideo(MethodView):
@@ -97,38 +113,39 @@ class TranscribeVideo(MethodView):
         Transcribes saved video with timestamps.
         """
         video = models.storage.get("Video", id=upload_id)
-        
+
         if video:
             video_data = BytesIO(video.data)
-            
+
             if video.filename.endswith(".mp4"):
                 file_suffix = ".mp4"
             elif video.filename.endswith(".webm"):
                 file_suffix = ".webm"
-                
+
             with tempfile.NamedTemporaryFile(suffix=file_suffix, delete=False) as temp_video_file:
                 temp_video_file.write(video_data.read())
                 temp_video_file.seek(0)
                 video_clip = VideoFileClip(temp_video_file.name)
                 audio_clip = video_clip.audio
-                
+
                 with tempfile.NamedTemporaryFile(suffix=".mp3", delete=False) as temp_audio_file:
                     audio_clip.write_audiofile(temp_audio_file.name)
                 transcribed_text = transcribe_audio(temp_audio_file.name)
-                
+
                 # Add timestamp for video length
-                duration = int(video_clip.duration) # seconds
+                duration = int(video_clip.duration)  # seconds
                 minutes = duration // 60
                 seconds = duration % 60
                 timestamp = f"{minutes:02}:{seconds:02}"
-                    
-                transcribed_with_timestamps = [f"{timestamp} - {transcribed_text}"]
-                    
+
+                transcribed_with_timestamps = [
+                    f"{timestamp} - {transcribed_text}"]
+
                 temp_video_file.close()
                 temp_audio_file.close()
                 os.remove(temp_video_file.name)
                 os.remove(temp_audio_file.name)
-            
+
             return jsonify({"Transcription": "\n".join(transcribed_with_timestamps)})
         else:
             return jsonify({"error": "Video not found"}), 404

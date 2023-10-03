@@ -12,12 +12,12 @@ The base URL for all API endpoints is:
 
 ### 2. Upload Video (Chunks)
 
-#### Uploads and appends video chunks to an existing video file on disk.
+#### Uploads and appends video chunks to an existing video file on database.
 
 - **Endpoint URL**: `/videos/upload`
 - **HTTP Method**: POST
 
-**Description**: Retrieves a blob file containing the recorded video and writes the video to a new file/ appends the video in chunks to an existing video file on disk.
+**Description**: Retrieves a blob file containing the recorded video and writes the video to a new file/ appends the video in chunks to a database.
 
 **Response**:
 

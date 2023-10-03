@@ -31,6 +31,8 @@ To run the Chrome Extension Backend locally, follow these steps:
 ## Structure
 * [Init](resources/__init__.py) - This creates and configures the Flask application.
 * [Config](resources/config.py) - This handles the configuration variables for the entire app.
+* [Database](models/engine/database.py) - This initailises, creates, and defines methods for operation on the database.
+* [Models](models/model.py) - This contains the SQLAlchemy model for the videos.
 * [Utils](resources/utils.py) - This module contains all necessary helper functions for views.py
 * [Views](resources/views.py) - This contains the endpoints necessary for operations on recorded video files.
 * [App](app.py) - This handles application running with necessary variables set in [flaskenv](.flaskenv).
@@ -43,6 +45,7 @@ For detailed documentation on the API endpoints and their usage, please refer to
 - [Video Playback](VPLAYBACK_DOCUMENTATION.md) file.
 - [Video List Retrieval](RETRIEVAL_DOCUMENTATION.md) file.
 - [Video Transcription](TRANSCRIPTION_DOCUMENTATION.md) file.
+- [Video Delete](VDELETE_DOCUMENTATION.md) file
 
 ## Swagger UI and Live Link
 - [Swagger](https://chrome-exx-937e6f500932.herokuapp.com/swagger-ui)

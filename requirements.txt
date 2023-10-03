@@ -1,3 +1,4 @@
+aiohttp==3.8.5
 aniso8601==9.0.1
 apispec==6.3.0
 blinker==1.6.2
@@ -33,6 +34,7 @@ pytz==2023.3.post1
 regex==2023.8.8
 requests==2.31.0
 six==1.16.0
+SQLAlchemy==2.0.21
 sympy==1.12
 tiktoken==0.3.3
 --find-links https://download.pytorch.org/whl/cpu/torch_stable.html
