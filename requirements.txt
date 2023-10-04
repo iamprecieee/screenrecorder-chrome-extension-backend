@@ -5,9 +5,9 @@ charset-normalizer==3.3.0
 click==8.1.7
 decorator==4.4.2
 filelock==3.12.4
-Flask==3.0.0
+Flask==2.3.3
 Flask-Cors==4.0.0
-flask-smorest==0.25.0
+flask-smorest==0.42.1
 gunicorn==21.2.0
 idna==3.4
 imageio==2.31.5
