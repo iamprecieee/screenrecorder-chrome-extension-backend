@@ -66,7 +66,7 @@ class VideoToDisk(MethodView):
                 resolution = f"{video_clip.size[0]} x {video_clip.size[1]}"
 
                 video = Video(filename=filename, data=video_data,
-                              size=file_size, resolution=resolution, extension=extension)
+                              size=file_size, resolution=resolution, extension=extension, transcript="")
                 video.save()
 
             return jsonify({"Uploaded succesfully": f"{filename}", "upload_id": f"{video.id}"}), 201
@@ -110,11 +110,27 @@ class VideoPlayBackAndDelete(MethodView):
 class TranscribeVideo(MethodView):
     def get(self, upload_id):
         """
+        Retrieves video transcription with timestamps.
+        """
+        video = models.storage.get("Video", id=upload_id)
+        
+        if video:
+            if video.transcript == "":
+                return jsonify({"message": "No transcript available for this video"})
+            return jsonify({"Transcription": video.transcript})
+        else:
+            return jsonify({"error": "Video not found"}), 404
+        
+        
+    def post(self, upload_id):
+        """
         Transcribes saved video with timestamps.
         """
         video = models.storage.get("Video", id=upload_id)
 
         if video:
+            if video.transcript != "":
+                return jsonify({"message": "A transcript already exists for this video"})
             video_data = BytesIO(video.data)
 
             if video.filename.endswith(".mp4"):
@@ -146,6 +162,9 @@ class TranscribeVideo(MethodView):
                 os.remove(temp_video_file.name)
                 os.remove(temp_audio_file.name)
 
-            return jsonify({"Transcription": "\n".join(transcribed_with_timestamps)})
+            # return jsonify({"Transcription": "\n".join(transcribed_with_timestamps)})
+            video.transcript = "\n".join(transcribed_with_timestamps)
+            models.storage.save()
+            return jsonify({"message": "Video transcribed successfully"})
         else:
             return jsonify({"error": "Video not found"}), 404
