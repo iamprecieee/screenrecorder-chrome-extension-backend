@@ -5,6 +5,8 @@ from flask_smorest import Api
 from flask_cors import CORS
 from resources.views import blp as VideoBlueprint
 import models
+from flask_migrate import Migrate
+from flask_sqlalchemy import SQLAlchemy
 
 
 def create_app():
@@ -16,6 +18,9 @@ def create_app():
 
     app.config.from_object(Config)
     api = Api(app)
+    db = SQLAlchemy()
+    db.init_app(app)
+    migrate = Migrate(app, db)
 
     # Enable Cross-Origin Resource Sharing (CORS)
     CORS(app, resources={r"/*"}, origins="*")
