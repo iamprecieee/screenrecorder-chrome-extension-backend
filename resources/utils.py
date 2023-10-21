@@ -14,8 +14,7 @@ def generate_unique_filename():
     """
     timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
     unique_id = str(uuid4().hex[:6])
-    filename = f"{timestamp}_{unique_id}"
-    return filename
+    return f"{timestamp}_{unique_id}"
 
 
 def get_file_extension(content_type):

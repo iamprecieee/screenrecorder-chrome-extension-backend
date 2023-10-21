@@ -80,11 +80,8 @@ class VideoPlayBackAndDelete(MethodView):
         """
         Retrieves and serves the requested video for playback.
         """
-        video = models.storage.get("Video", id=upload_id)
-
-        if video:
-            response = Response(BytesIO(video.data), content_type="video/mp4")
-            return response
+        if video := models.storage.get("Video", id=upload_id):
+            return Response(BytesIO(video.data), content_type="video/mp4")
         else:
             return jsonify({"error": "Video not found"}), 404
 
@@ -93,9 +90,7 @@ class VideoPlayBackAndDelete(MethodView):
         Deletes a specific video from database.
         """
         try:
-            video = models.storage.get("Video", id=upload_id)
-
-            if video:
+            if video := models.storage.get("Video", id=upload_id):
                 models.storage.delete("Video", id=video.id)
                 models.storage.save()
                 return '', 204
@@ -112,59 +107,52 @@ class TranscribeVideo(MethodView):
         """
         Retrieves video transcription with timestamps.
         """
-        video = models.storage.get("Video", id=upload_id)
-        
-        if video:
-            if video.transcript == "":
-                return jsonify({"message": "No transcript available for this video"})
-            return jsonify({"Transcription": video.transcript})
-        else:
+        if not (video := models.storage.get("Video", id=upload_id)):
             return jsonify({"error": "Video not found"}), 404
+        if video.transcript == "":
+            return jsonify({"message": "No transcript available for this video"})
+        return jsonify({"Transcription": video.transcript})
         
         
     def post(self, upload_id):
         """
         Transcribes saved video with timestamps.
         """
-        video = models.storage.get("Video", id=upload_id)
-
-        if video:
-            if video.transcript != "":
-                return jsonify({"message": "A transcript already exists for this video"})
-            video_data = BytesIO(video.data)
-
-            if video.filename.endswith(".mp4"):
-                file_suffix = ".mp4"
-            elif video.filename.endswith(".webm"):
-                file_suffix = ".webm"
-
-            with tempfile.NamedTemporaryFile(suffix=file_suffix, delete=False) as temp_video_file:
-                temp_video_file.write(video_data.read())
-                temp_video_file.seek(0)
-                video_clip = VideoFileClip(temp_video_file.name)
-                audio_clip = video_clip.audio
-
-                with tempfile.NamedTemporaryFile(suffix=".mp3", delete=False) as temp_audio_file:
-                    audio_clip.write_audiofile(temp_audio_file.name)
-                transcribed_text = transcribe_audio(temp_audio_file.name)
-
-                # Add timestamp for video length
-                duration = int(video_clip.duration)  # seconds
-                minutes = duration // 60
-                seconds = duration % 60
-                timestamp = f"{minutes:02}:{seconds:02}"
-
-                transcribed_with_timestamps = [
-                    f"{timestamp} - {transcribed_text}"]
-
-                temp_video_file.close()
-                temp_audio_file.close()
-                os.remove(temp_video_file.name)
-                os.remove(temp_audio_file.name)
-
-            # return jsonify({"Transcription": "\n".join(transcribed_with_timestamps)})
-            video.transcript = "\n".join(transcribed_with_timestamps)
-            models.storage.save()
-            return jsonify({"message": "Video transcribed successfully"})
-        else:
+        if not (video := models.storage.get("Video", id=upload_id)):
             return jsonify({"error": "Video not found"}), 404
+        if video.transcript != "":
+            return jsonify({"message": "A transcript already exists for this video"})
+        video_data = BytesIO(video.data)
+
+        if video.filename.endswith(".mp4"):
+            file_suffix = ".mp4"
+        elif video.filename.endswith(".webm"):
+            file_suffix = ".webm"
+
+        with tempfile.NamedTemporaryFile(suffix=file_suffix, delete=False) as temp_video_file:
+            temp_video_file.write(video_data.read())
+            temp_video_file.seek(0)
+            video_clip = VideoFileClip(temp_video_file.name)
+            audio_clip = video_clip.audio
+
+            with tempfile.NamedTemporaryFile(suffix=".mp3", delete=False) as temp_audio_file:
+                audio_clip.write_audiofile(temp_audio_file.name)
+            transcribed_text = transcribe_audio(temp_audio_file.name)
+
+            # Add timestamp for video length
+            duration = int(video_clip.duration)  # seconds
+            minutes, seconds = divmod(duration, 60)
+            timestamp = f"{minutes:02}:{seconds:02}"
+
+            transcribed_with_timestamps = [
+                f"{timestamp} - {transcribed_text}"]
+
+            temp_video_file.close()
+            temp_audio_file.close()
+            os.remove(temp_video_file.name)
+            os.remove(temp_audio_file.name)
+
+        # return jsonify({"Transcription": "\n".join(transcribed_with_timestamps)})
+        video.transcript = "\n".join(transcribed_with_timestamps)
+        models.storage.save()
+        return jsonify({"message": "Video transcribed successfully"})
